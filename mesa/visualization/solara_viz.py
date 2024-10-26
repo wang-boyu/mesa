@@ -24,7 +24,6 @@ See the Visualization Tutorial and example models for more details.
 from __future__ import annotations
 
 import asyncio
-import copy
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Literal
 
@@ -181,15 +180,6 @@ def ModelController(model: solara.Reactive[Model], play_interval=100):
     """
     playing = solara.use_reactive(False)
     running = solara.use_reactive(True)
-    original_model = solara.use_reactive(None)
-
-    def save_initial_model():
-        """Save the initial model for comparison."""
-        original_model.set(copy.deepcopy(model.value))
-        playing.value = False
-        force_update()
-
-    solara.use_effect(save_initial_model, [model.value])
 
     async def step():
         while playing.value and running.value:
@@ -205,18 +195,11 @@ def ModelController(model: solara.Reactive[Model], play_interval=100):
         model.value.step()
         running.value = model.value.running
 
-    def do_reset():
-        """Reset the model to its initial state."""
-        playing.value = False
-        running.value = True
-        model.value = copy.deepcopy(original_model.value)
-
     def do_play_pause():
         """Toggle play/pause."""
         playing.value = not playing.value
 
     with solara.Row(justify="space-between"):
-        solara.Button(label="Reset", color="primary", on_click=do_reset)
         solara.Button(
             label="▶" if not playing.value else "❚❚",
             color="primary",
