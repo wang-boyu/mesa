@@ -19,19 +19,14 @@ def agent_portrayal(agent):
 
 
 model_params = {
-    "seed": {
-        "type": "InputText",
-        "value": 42,
-        "label": "Random Seed",
-    },
     "density": Slider("Agent density", 0.8, 0.1, 1.0, 0.1),
-    "minority_pc": Slider("Fraction minority", 0.2, 0.0, 1.0, 0.05),
+    "minority_pc": Slider("Fraction minority", 0.5, 0.0, 1.0, 0.05),
     "homophily": Slider("Homophily", 3, 0, 8, 1),
     "width": 20,
     "height": 20,
 }
 
-model1 = Schelling()
+model1 = Schelling(width=20, height=20, density=0.8, minority_pc=0.5, homophily=3)
 
 HappyPlot = make_plot_component({"happy": "tab:green"})
 
@@ -39,8 +34,11 @@ page = SolaraViz(
     model1,
     components=[
         make_space_component(agent_portrayal),
-        HappyPlot,
-        get_happy_agents,
+        make_plot_component("happy"),
+        make_plot_component("shannon_entropy"),
+        make_plot_component(
+            ["dissimilarity_index", "dissimilarity_index_2", "dissimilarity_index_3"]
+        ),
     ],
     model_params=model_params,
 )
