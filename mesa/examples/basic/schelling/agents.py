@@ -13,11 +13,25 @@ class SchellingAgent(Agent):
         super().__init__(model)
         self.type = agent_type
 
-    def step(self) -> None:
+    def _get_num_same_type_neighbours(self) -> int:
         neighbors = self.model.grid.iter_neighbors(
             self.pos, moore=True, radius=self.model.radius
         )
-        similar = sum(1 for neighbor in neighbors if neighbor.type == self.type)
+        return sum(1 for neighbor in neighbors if neighbor.type == self.type)
+
+    @property
+    def same_type_neighbours(self) -> int:
+        return self._get_num_same_type_neighbours()
+
+    @property
+    def diff_type_neighbours(self) -> int:
+        neighbors = self.model.grid.iter_neighbors(
+            self.pos, moore=True, radius=self.model.radius
+        )
+        return sum(1 for neighbor in neighbors if neighbor.type != self.type)
+
+    def step(self) -> None:
+        similar = self._get_num_same_type_neighbours()
 
         # If unhappy, move:
         if similar < self.model.homophily:
