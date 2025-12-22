@@ -601,6 +601,11 @@ def test_cell():
     with pytest.raises(Exception):
         cell1.add_agent(CellAgent(model))
 
+    # Test capacity=0 (no agents allowed)
+    cell_zero = Cell((1,), capacity=0, random=random.Random())
+    with pytest.raises(Exception):
+        cell_zero.add_agent(CellAgent(model))
+
 
 def test_cell_is_full_with_none_capacity():
     """Ensure a cell with unlimited capacity is never considered full regardless of agent count."""
