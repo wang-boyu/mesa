@@ -603,6 +603,7 @@ def test_cell():
 
 
 def test_cell_is_full_with_none_capacity():
+    """Ensure a cell with unlimited capacity is never considered full regardless of agent count."""
     cell = Cell((0, 0), capacity=None)
     assert cell.is_full is False
 
@@ -616,6 +617,7 @@ def test_cell_is_full_with_none_capacity():
 
 
 def test_cell_is_full_with_finite_capacity():
+    """Verify a cell reports full only after reaching its defined finite capacity."""
     cell = Cell((0, 0), capacity=3)
     model = Model()
 
